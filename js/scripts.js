@@ -1,15 +1,5 @@
-/*!
-* Start Bootstrap - Resume v7.0.6 (https://startbootstrap.com/theme/resume)
-* Copyright 2013-2023 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-resume/blob/master/LICENSE)
-*/
-//
-// Scripts
-// 
-
 window.addEventListener('DOMContentLoaded', event => {
 
-    // Activate Bootstrap scrollspy on the main nav element
     const sideNav = document.body.querySelector('#sideNav');
     if (sideNav) {
         new bootstrap.ScrollSpy(document.body, {
@@ -18,7 +8,6 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     };
 
-    // Collapse responsive navbar when toggler is visible
     const navbarToggler = document.body.querySelector('.navbar-toggler');
     const responsiveNavItems = [].slice.call(
         document.querySelectorAll('#navbarResponsive .nav-link')
@@ -27,6 +16,24 @@ window.addEventListener('DOMContentLoaded', event => {
         responsiveNavItem.addEventListener('click', () => {
             if (window.getComputedStyle(navbarToggler).display !== 'none') {
                 navbarToggler.click();
+            }
+        });
+    });
+
+    // 앵커 클릭 시 이미지 로드 완료 후 스크롤
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                // 모든 이미지 로드 대기 후 스크롤
+                Promise.all(
+                    [...document.images].map(img =>
+                        img.complete ? Promise.resolve() : new Promise(r => img.addEventListener('load', r))
+                    )
+                ).then(() => {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
             }
         });
     });
